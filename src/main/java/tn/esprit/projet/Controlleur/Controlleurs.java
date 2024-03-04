@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -52,11 +52,10 @@ public class Controlleurs {
     public News addNews(@RequestBody News n){
         return iService.addNews(n);
     }
-    @PostMapping("/ajouterMatch")
+    @PostMapping(value = "/ajouterMatch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Matches addMatches(@RequestBody Matches n){
         return iService.addMatch(n);
     }
-
 
 
     @PostMapping("/ajouterBooking")
@@ -67,25 +66,31 @@ public class Controlleurs {
     public Products addProducts(@RequestBody Products f){
         return iService.addProducts(f);
     }
-    @PutMapping("/modifierUser")
-    public User updateUser(@RequestBody User f){
+    @PutMapping("/modifierUser/{id}")
+    public User updateUser(@PathVariable("id") Long id,@RequestBody User f){
+        f.setIdUser(id);
         return iService.updateUser(f);
     }
-    @PutMapping("/modifierMatch")
-    public Matches updateMatch(@RequestBody Matches f){
+    @PutMapping("/modifierMatch/{id}")
+    public Matches updateMatch(@PathVariable("id") Long id,@RequestBody Matches f){
+        f.setId(id);
         return iService.updateMatch(f);
     }
-    @PutMapping("/modifierBooking")
-    public Booking updateFoyer(@RequestBody Booking f){
-        return iService.updateFoyer(f);
+    @PutMapping("/modifierBooking/{id}")
+    public Booking updateBooking(@PathVariable("id") Long id, @RequestBody Booking f) {
+        // Votre logique de mise à jour de la réservation ici
+        f.setIdBooking(id); // Assurez-vous de définir l'ID de réservation dans l'objet Booking
+        return iService.updateBooking(f);
     }
-    @PutMapping("/modifierNews")
-    public News updateNews(@RequestBody News f){
+    @PutMapping("/modifierNews/{id}")
+    public News updateNews(@PathVariable("id") Long id,@RequestBody News f){
+        f.setIdNews(id);
         return iService.updateNews(f);
     }
-    @PutMapping("/modifierProducts")
-    public Products updateFoyer(@RequestBody Products f){
-        return iService.updateFoyer(f);
+    @PutMapping("/modifierProducts/{id}")
+    public Products updateProducts(@PathVariable("id") Long id,@RequestBody Products f){
+        f.setIdProducts(id);
+        return iService.updateProducts(f);
     }
     @GetMapping("/afficherUser/{idUser}")
     public User retrieveUser(@PathVariable("idUser") long idUser){

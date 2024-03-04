@@ -33,11 +33,13 @@ public interface IService {
 
     Matches updateMatch(Matches f);
 
-    Booking updateFoyer(Booking f);
+
+    Booking updateBooking(Booking f);
 
     News updateNews(News f);
 
-    Products updateFoyer(Products f);
+
+    Products updateProducts(Products f);
 
     User retrieveUser(long idUser);
 

@@ -66,7 +66,7 @@ public class Services implements IService{
         return matchRepo.save(f);
     }
     @Override
-    public Booking updateFoyer(Booking f) {
+    public Booking updateBooking(Booking f) {
         return bookingRepo.save(f);
     }
     @Override
@@ -74,7 +74,7 @@ public class Services implements IService{
         return newsRepo.save(f);
     }
     @Override
-    public Products updateFoyer(Products f) {
+    public Products updateProducts(Products f) {
         return productRepo.save(f);
     }
 

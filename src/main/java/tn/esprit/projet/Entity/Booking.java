@@ -24,6 +24,4 @@ public class Booking implements Serializable {
     @ManyToOne
     User user;
 
-
-
 }
