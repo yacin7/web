@@ -21,6 +21,29 @@ const Newss = () => {
         setNews(result);
       });
   }, []);
+
+  const handleUpdate = (idNews) => {
+    // Implement your update logic here
+    console.log("Update News with ID:", idNews);
+    navigate(`/NewsFormUpdate/${idNews}`); 
+  };
+
+  const handleDelete = (idNews) => {
+    // Implement your delete logic here
+    console.log("Delete New with ID:", idNews);
+    fetch(`http://localhost:8090/web/supprimerNews/${idNews}`, {
+      method: 'DELETE'
+    })
+      .then((res) => res.json())
+      .then(() => {
+        // Remove the deleted news from the state
+        setNews(News.filter(news => news.idNews !== idNews));
+        
+      })
+      .catch((error) => {
+        console.log("Error deleting booking:", error);
+      });
+  };
   return (
     <>
       
@@ -39,6 +62,7 @@ const Newss = () => {
               <th>Title</th>
               <th>Description</th>
               <th>Date news</th>
+              <th>Update / Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -47,6 +71,20 @@ const Newss = () => {
               <td>{news.title}</td>
               <td>{news.description}</td>
               <td>{news.datenews}</td>
+              <td>
+                  <Button
+                    color="info"
+                    onClick={() => handleUpdate(news.idNews)}
+                  >
+                    Update
+                  </Button>{" "}
+                  <Button
+                    color="danger"
+                    onClick={() => handleDelete(news.idNews)}
+                  >
+                    Delete
+                  </Button>
+                </td>
             </tr>
             ))}
           </tbody>

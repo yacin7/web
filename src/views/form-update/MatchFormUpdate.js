@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import ComponentCard from '../../components/ComponentCard';
 
-const MatchForm = () => {
+const MatchFormUpdate = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [matches, setMatches] = useState({
     datematch: '',
@@ -87,7 +87,7 @@ const MatchForm = () => {
             <FormGroup>
               <Label className="control-Label" htmlFor="imageplayer2">Image player2 *</Label>
               <div className="mb-2">
-                <input type="file"  className="form-control" />
+                <input type="file" className="form-control" />
               </div>
               <span className="text-danger">{errors.imageplayer2 && 'Image player 2 is required.'}</span>
             </FormGroup>
@@ -133,4 +133,4 @@ const MatchForm = () => {
   );
 };
 
-export default MatchForm;
+export default MatchFormUpdate;

@@ -1,29 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, FormGroup, Label } from 'reactstrap';
 import { useForm } from 'react-hook-form';
 import Form from 'react-validation/build/form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import ComponentCard from '../../components/ComponentCard';
 
-const BookingForm = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm(); // initialise the hook
-
-  const [date, setDate] = useState('');
-  const [price, setPrice] = useState('');
+const BookingFormUpdate = () => {
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm(); // initialise the hook
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { bookingId } = useParams();
+
+  useEffect(() => {
+    console.log("Booking ID:", bookingId);
+    // Fetch booking details based on bookingId
+    fetch(`http://localhost:8090/web/afficherBooking/${bookingId}`)
+      .then(response => response.json())
+      .then(data => {
+        // Set the form values with fetched data
+        setValue('date', data.date);
+        setValue('price', data.price);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching booking details:', error);
+        setLoading(false);
+      });
+  }, [bookingId, setValue]);
+  
+
   const onSubmit = (data) => {
-    const booking = { date: data.date, price: data.price }; // Utiliser les mêmes noms que dans le formulaire
-    console.log("Data to be sent:", booking); // Vérifiez les valeurs avant l'envoi
-    fetch("http://localhost:8090/web/ajouterBooking", {
-      method: "POST",
+    const updatedBooking = { date: data.date, price: data.price };
+    console.log("Data to be sent:", updatedBooking);
+    fetch(`http://localhost:8090/web/modifierBooking/${bookingId}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(booking)
+      body: JSON.stringify(updatedBooking)
     }).then(() => {
       navigate('/tables/Booking');
-      console.log("New Booking added");
+      console.log("Booking updated");
+    }).catch(error => {
+      console.error('Error updating booking:', error);
     });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -33,18 +57,16 @@ const BookingForm = () => {
             <Form onSubmit={handleSubmit(onSubmit)}>
               <FormGroup>
                 <Label className="control-Label" htmlFor="date">
-                  Data *
+                  Date *
                 </Label>
                 <div className="mb-2">
                   <input
                     type="date"
                     {...register('date', { required: true })}
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
                     className="form-control"
                   />
                 </div>
-                <span className="text-danger">{errors.date && 'date is required.'}</span>
+                <span className="text-danger">{errors.date && 'Date is required.'}</span>
               </FormGroup>
               <FormGroup>
                 <Label className="control-Label" htmlFor="price">
@@ -54,12 +76,10 @@ const BookingForm = () => {
                   <input
                     type="number"
                     {...register('price', { required: true })}
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
                     className="form-control"
                   />
                 </div>
-                <span className="text-danger">{errors.price && 'price is required.'}</span>
+                <span className="text-danger">{errors.price && 'Price is required.'}</span>
               </FormGroup>
 
               <FormGroup>
@@ -76,4 +96,4 @@ const BookingForm = () => {
   );
 };
 
-export default BookingForm;
+export default BookingFormUpdate;

@@ -1,28 +1,41 @@
+import React from "react";
 import { Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import ShopeItems from './Shopitems';
+import img1 from '../../../assets/images/users/user4.jpg';
 
 const ShopListing = () => {
+  const [Products, setProducts] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch("http://localhost:8090/web/affichertoutProducts")
+      .then((res) => res.json())
+      .then((result) => {
+        setProducts(result);
+      });
+  }, []);
+
   return (
     <div className="p-4">
       <Row>
-        {ShopeItems.map((product) => (
-          <Col lg="4" key={product.id} className="mb-4">
+      {Products && Products.map((product) => (
+          <Col lg="4" key={product.idProducts} className="mb-4">
             <Link to="/apps/shopdetail">
-              <img src={product.photo} alt="product" className="img-fluid rounded-3" />
+              <img src={img1} alt="product" className="img-fluid rounded-3" />
             </Link>
+            
             <div className="pt-2">
-              <small>{product.category}</small>
-              <h5 className="mb-3">{product.title}</h5>
+              <small>Description :{product.description}</small>
+              <h5 className="mb-3">Name :{product.name}</h5>
               <div className="d-flex align-items-center">
-                <h5>{product.price}</h5>
+                <h5>{product.price} Dt</h5>
                 <div className="ms-auto">
-                  {product.star.map((index) => (
-                    <i className="bi bi-star-fill text-warning" key={index} />
-                  ))}
+                 
+                    <i className="bi bi-star-fill text-warning" />
+                
                 </div>
               </div>
             </div>
+            
           </Col>
         ))}
       </Row>

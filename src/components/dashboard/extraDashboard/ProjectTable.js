@@ -19,6 +19,29 @@ const ProjectTables = () => {
         setProducts(result);
       });
   }, []);
+
+  const handleUpdate = (idProducts) => {
+    // Implement your update logic here
+    console.log("Update Products with ID:", idProducts);
+    navigate(`/ProductFormUpdate/${idProducts}`); 
+  };
+
+  const handleDelete = (idProducts) => {
+    // Implement your delete logic here
+    console.log("Delete Products with ID:", idProducts);
+    fetch(`http://localhost:8090/web/supprimerProducts/${idProducts}`, {
+      method: 'DELETE'
+    })
+      .then((res) => res.json())
+      .then(() => {
+        // Remove the deleted booking from the state
+        setProducts(Products.filter(products => products.idProducts !== idProducts));
+        
+      })
+      .catch((error) => {
+        console.log("Error deleting booking:", error);
+      });
+  };
   return (
     <div>
       <Button className="btn" color="primary" size="lg" onClick={onSubmit}>
@@ -32,6 +55,7 @@ const ProjectTables = () => {
                 <th className='px-4'>Description</th>
 
                 <th className='px-4'>Price</th>
+                <th className='px-4'>Update / Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -47,7 +71,20 @@ const ProjectTables = () => {
                   </td>
                   <td>{product.description}</td>
                   <td>{product.price}</td>
-
+                  <td>
+                  <Button
+                    color="info"
+                    onClick={() => handleUpdate(product.idProducts)}
+                  >
+                    Update
+                  </Button>{" "}
+                  <Button
+                    color="danger"
+                    onClick={() => handleDelete(product.idProducts)}
+                  >
+                    Delete
+                  </Button>
+                </td>
                  
                 </tr>
               ))}

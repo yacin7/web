@@ -1,43 +1,54 @@
-import React, { useState } from 'react';
-import { Row, Col, Button, FormGroup, Label, ListGroup, ListGroupItem } from 'reactstrap';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Button, FormGroup, Label } from 'reactstrap';
 import { useForm } from 'react-hook-form';
 import Form from 'react-validation/build/form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useParams} from 'react-router-dom';
 
 import ComponentCard from '../../components/ComponentCard';
 
-const ProductForm = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm(); // initialise the hook
-  const [product, setProduct] = useState({
-    name: '',
-    description: '',
-    price: '',
-  });
+const ProductFormUpdate = () => {
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm(); // initialise the hook
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { ProductId } = useParams();
+
+  useEffect(() => {
+    console.log("Product ID:", ProductId);
+    // Fetch News details based on bookingId
+    fetch(`http://localhost:8090/web/afficherProducts/${ProductId}`)
+      .then(response => response.json())
+      .then(data => {
+        // Set the form values with fetched data
+        setValue('name', data.name);
+        setValue('description', data.description);
+        setValue('price', data.price);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching Product details:', error);
+        setLoading(false);
+      });
+  }, [ProductId, setValue]);
+
 
   const onSubmit = (data) => {
-    // Here you can make an HTTP request to your Spring Boot backend to submit the product data
-    // Example using fetch API
-    fetch('http://localhost:8090/web/ajouterProducts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(responseData => {
-      console.log('Success:', responseData);
-      // Optionally, you can handle success response here, like showing a success message or redirecting
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      // Optionally, you can handle error response here, like showing an error message
+    const updatedProduct = { name: data.name, description: data.description, price: data.price };
+    console.log("Data to be sent:", updatedProduct);
+    fetch(`http://localhost:8090/web/modifierProducts/${ProductId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedProduct)
+    }).then(() => {
+      navigate('/tables/Products');
+      console.log("Product updated");
+    }).catch(error => {
+      console.error('Error updating Product:', error);
     });
-    
-    setProduct(data);
-    navigate('/tables/Products');
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -90,12 +101,7 @@ const ProductForm = () => {
               </FormGroup>
             </Form>
             <hr />
-            <h4 className="mt-5">Product Information</h4>
-            <ListGroup>
-              <ListGroupItem>Name: {product.name}</ListGroupItem>
-              <ListGroupItem>Description: {product.description}</ListGroupItem>
-              <ListGroupItem>Price: {product.price}</ListGroupItem>
-            </ListGroup>
+            
           </ComponentCard>
         </Col>
       </Row>
@@ -103,4 +109,4 @@ const ProductForm = () => {
   );
 };
 
-export default ProductForm;
+export default ProductFormUpdate;

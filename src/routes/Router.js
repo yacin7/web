@@ -64,6 +64,11 @@ const NewsForm = Loadable(lazy(() => import('../views/form-validation/NewsForm')
 const UserForm = Loadable(lazy(() => import('../views/form-validation/UserForm')));
 const MatchForm = Loadable(lazy(() => import('../views/form-validation/MatchForm')));
 const BookingForm = Loadable(lazy(() => import('../views/form-validation/BookingForm')));
+const BookingFormUpdate = Loadable(lazy(() => import('../views/form-update/BookingFormUpdate')));
+const MatchFormUpdate = Loadable(lazy(() => import('../views/form-update/MatchFormUpdate')));
+const NewsFormUpdate = Loadable(lazy(() => import('../views/form-update/NewsFormUpdate')));
+const ProductFormUpdate = Loadable(lazy(() => import('../views/form-update/ProductsFormUpdate')));
+const UserFormUpdate = Loadable(lazy(() => import('../views/form-update/UserFormUpdate')));
 const ProductsForm = Loadable(lazy(() => import('../views/form-validation/ProductsForm')));
 
 const FormSteps = Loadable(lazy(() => import('../views/form-steps/Steps')));
@@ -174,6 +179,11 @@ const ThemeRoutes = [
       { path: '/NewsForm', name: 'NewsForm', exact: true, element: <NewsForm /> },
       { path: '/UserForm', name: 'UserForm', exact: true, element: <UserForm /> },
       { path: '/BookingForm', name: 'BookingForm', exact: true, element: <BookingForm /> },
+      { path: '/BookingFormUpdate/:bookingId', name: 'BookingFormUpdate', exact: true, element: <BookingFormUpdate /> },
+      { path: '/NewsFormUpdate/:NewsId', name: 'BookingFormUpdate', exact: true, element: <NewsFormUpdate /> },
+      { path: '/MatchFormUpdate/:MatchId', name: 'MatchFormUpdate', exact: true, element: <MatchFormUpdate /> },
+      { path: '/ProductFormUpdate/:ProductId', name: 'ProductFormUpdate', exact: true, element: <ProductFormUpdate /> },
+      { path: '/UserFormUpdate/:UserId', name: 'UserFormUpdate', exact: true, element: <UserFormUpdate /> },
       { path: '/MatchForm', name: 'MatchForm', exact: true, element: <MatchForm /> },
       { path: '/ProductsForm', name: 'ProductsForm', exact: true, element: <ProductsForm /> },
       { path: '/form-steps', name: 'form-steps', exact: true, element: <FormSteps /> },
