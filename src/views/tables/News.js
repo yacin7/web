@@ -46,8 +46,6 @@ const Newss = () => {
   };
   return (
     <>
-      
-     
 
       <ComponentCard
         title="News Table"
@@ -59,6 +57,7 @@ const Newss = () => {
         <Table responsive>
           <thead>
             <tr>
+            <th>image</th>
               <th>Title</th>
               <th>Description</th>
               <th>Date news</th>
@@ -67,26 +66,35 @@ const Newss = () => {
           </thead>
           <tbody>
           {News.map((news) => (
-            <tr>
-              <td>{news.title}</td>
-              <td>{news.description}</td>
-              <td>{news.datenews}</td>
-              <td>
-                  <Button
-                    color="info"
-                    onClick={() => handleUpdate(news.idNews)}
-                  >
-                    Update
-                  </Button>{" "}
-                  <Button
-                    color="danger"
-                    onClick={() => handleDelete(news.idNews)}
-                  >
-                    Delete
-                  </Button>
-                </td>
-            </tr>
-            ))}
+  <tr key={news.idNews}> {/* Add key prop here */}
+    <td>
+      <img
+        src={news.imagenews}
+        alt="avatar"
+        width="45"
+        height="45"
+      />
+    </td>
+    <td>{news.title}</td>
+    <td>{news.description}</td>
+    <td>{news.datenews}</td>
+    <td>
+      <Button
+        color="info"
+        onClick={() => handleUpdate(news.idNews)}
+      >
+        Update
+      </Button>{" "}
+      <Button
+        color="danger"
+        onClick={() => handleDelete(news.idNews)}
+      >
+        Delete
+      </Button>
+    </td>
+  </tr>
+))}
+
           </tbody>
         </Table>
         

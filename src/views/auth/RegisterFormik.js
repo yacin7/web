@@ -1,23 +1,27 @@
 import React from 'react';
+import axios from 'axios';
 import { Button, Label, FormGroup, Container, Row, Col, Card, CardBody } from 'reactstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLogo from "../../layouts/logo/AuthLogo";
 import { ReactComponent as LeftBg } from '../../assets/images/bg/login-bgleft.svg';
 import { ReactComponent as RightBg } from '../../assets/images/bg/login-bg-right.svg';
 
+
 const RegisterFormik = () => {
+  const navigate = useNavigate();
   const initialValues = {
-    UserName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'Admin',
     acceptTerms: false,
   };
 
   const validationSchema = Yup.object().shape({
-    UserName: Yup.string().required('UserName is required'),
+    username: Yup.string().required('UserName is required'),
     email: Yup.string().email('Email is invalid').required('Email is required'),
     password: Yup.string()
       .min(6, 'Password must be at least 6 characters')
@@ -27,6 +31,31 @@ const RegisterFormik = () => {
       .required('Confirm Password is required'),
     acceptTerms: Yup.bool().oneOf([true], 'Accept Terms & Conditions is required'),
   });
+
+  const handleSubmit = async (fields) => {
+    try {
+      const { username, email, password ,role} = fields;
+      
+
+      // Send an HTTP POST request to the backend API endpoint
+      await axios.post('http://localhost:8090/api/v1/auth/register', {
+         username,  // Updated to camelCase
+        password,
+        role,
+        email
+      });
+
+    
+      // Registration successful, you can redirect the user to another page or show a success message
+      alert('Registration successful!');
+      navigate('/auth/loginformik'); // Redirect to the login page after successful registration
+    } catch (error) {
+      // Handle registration error, you can display an error message or perform any other action
+      console.error('Registration failed:', error);
+      alert('Registration failed. Please try again.');
+    }
+  };
+
 
   return (
     <div className="loginBox">
@@ -45,23 +74,20 @@ const RegisterFormik = () => {
                 <Formik
                   initialValues={initialValues}
                   validationSchema={validationSchema}
-                  onSubmit={(fields) => {
-                    // eslint-disable-next-line no-alert
-                    alert(`SUCCESS!! :-)\n\n${JSON.stringify(fields, null, 4)}`);
-                  }}
+                  onSubmit={handleSubmit}
                   render={({ errors, touched }) => (
                     <Form>
                       <FormGroup>
                         <Label htmlFor="firstName">User Name</Label>
                         <Field
-                          name="UserName"
+                          name="username"
                           type="text"
                           className={`form-control ${
-                            errors.UserName && touched.UserName ? ' is-invalid' : ''
+                            errors.username && touched.username ? ' is-invalid' : ''
                           }`}
                         />
                         <ErrorMessage
-                          name="UserName"
+                          name="username"
                           component="div"
                           className="invalid-feedback"
                         />
