@@ -42,6 +42,7 @@ public class Services implements IService{
     }
     @Override
     public News addNews(News n) {
+
         return newsRepo.save(n);
     }
     @Override

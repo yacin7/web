@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import tn.esprit.projet.Entity.*;
 import tn.esprit.projet.Services.IService;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
@@ -22,13 +26,15 @@ import java.util.List;
 @RequestMapping("/web")
 @CrossOrigin
 public class Controlleurs {
+    private final String imagesDirPath = "C:/4SLEM/pi/webpi-spring/webpi-spring/images"; // Relative path to where you want to store the images
+
     IService iService;
 
     @GetMapping("/affichertoutMatch")
     public List<Matches> retrieveAllMatches() {
         return iService.retrieveAllMatches();
     }
-    @GetMapping("/affichertoutNews")
+    @GetMapping(value = "/affichertoutNews", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<News> retrieveAllNews() {
         return iService.retrieveAllNews();
     }
@@ -48,10 +54,50 @@ public class Controlleurs {
     public User addUser(@RequestBody User f){
         return iService.addUser(f);
     }
-    @PostMapping("/ajouterNews")
-    public News addNews(@RequestBody News n){
-        return iService.addNews(n);
+    @PostMapping(value = "/ajouterNews", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public News addNews(@RequestParam("title") String title,
+                        @RequestParam("description") String description,
+                        @RequestParam("datenews") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate datenews,
+                        @RequestParam("file") MultipartFile imageFile) {
+        try {
+            System.out.println("saving image");
+            // Save the image and get the path
+            String imagePath = saveImage(imageFile);
+
+            // Create a new News object and set its properties
+            News news = new News();
+            news.setTitle(title);
+            news.setDescription(description);
+            news.setDatenews(datenews);
+            news.setImagenews(imagePath); // Set the image path
+            System.out.println("saving news");
+            // Save the news object using your service
+            return iService.addNews(news);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error saving image", e);
+        }
     }
+
+    // Method to save the image and return the relative path
+    private String saveImage(MultipartFile imageFile) throws IOException {
+        if (!imageFile.isEmpty()) {
+            String originalFilename = imageFile.getOriginalFilename();
+            File destFile = new File(imagesDirPath, originalFilename);
+            try {
+                imageFile.transferTo(destFile);
+                return destFile.getAbsolutePath(); // Return the path where the image was saved
+            } catch (IOException e) {
+                // Log the exception or print the stack trace
+                System.err.println("Exception occurred while saving the image: " + e.getMessage());
+                e.printStackTrace(); // Print the full stack trace for debugging purposes
+                return null; // You might want to handle this differently depending on your application's needs
+            }
+        } else {
+            System.out.println("Received file is empty.");
+            return null; // or handle this case as you see fit
+        }
+    }
+
     @PostMapping(value = "/ajouterMatch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Matches addMatches(@RequestBody Matches n){
         return iService.addMatch(n);

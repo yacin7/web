@@ -22,6 +22,7 @@ public class News implements Serializable {
     private String Title;
     private String description;
     private LocalDate datenews;
+    private String imagenews;
     @ManyToOne
     User user;
 }

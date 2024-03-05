@@ -28,10 +28,9 @@ public class Matches implements Serializable {
     private String nameplayer2;
     private Integer scoreplayer1;
     private Integer scoreplayer2;
-    @Lob
-    @Column(columnDefinition = "MEDIUMBLOB")
+
     private String imageplayer1;
-    @Lob
+
     @Column(columnDefinition = "MEDIUMBLOB")
     private String imageplayer2;
     private Integer nbrparticipants;
